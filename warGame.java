@@ -30,16 +30,46 @@ class DeckOfCards { //Method involving the deck of cards used in the game
         }
         return deck;
     }
+    
+    int[] Split(int[] mixDeck, boolean next) { //Returns half of deck for player and computer
+    
+        if(next) { //If true, assign the first half of the deck
+            
+            int[] firstHalf = new int[26]; //Move first half of deck to one array
+            
+            for(int i = 0; i < 26; i++) {
+                firstHalf[i] = mixDeck[i];
+            }
+            return firstHalf;
+        }
+        
+        else { //If not true, assign second half of the deck
+            
+            int[] secondHalf = new int[26]; //Move other half of deck to another array
+            
+            for(int i = 26; i < 52; i++) {
+                secondHalf[i-26] = mixDeck[i];
+            }
+            return secondHalf;
+        }
+    }
 }
 
 public class warGame {
     public static void main(String args[]) {
         
-        DeckOfCards newGame= new DeckOfCards();
-        int cards[] = newGame.create();
-        cards = newGame.shuffle(cards);
-        for(int i = 0; i < cards.length; i++){
-            System.out.println(cards[i]);
+        DeckOfCards newGame = new DeckOfCards(); //Create reference variable
+        int cards[] = newGame.create(); //Call method that creates deck of cards
+        cards = newGame.shuffle(cards); //Call method that shuffles the deck
+        
+        int player[] = newGame.Split(cards, true); //Assign half of the deck to
+        int computer[] = newGame.Split(cards, false); //the player and computer
+        
+        
+        for(int i = 0; i < 26; i++){
+            //System.out.println(player[i]);
+            System.out.println(computer[i]);
         }
+        
     }
 }
