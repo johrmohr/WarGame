@@ -1,6 +1,16 @@
 import java.util.Random; //Random number generator
+import java.util.Arrays; //Copy array
 
 class DeckOfCards { //Method involving the deck of cards used in the game
+
+    int kept1, kept2, kept3; //Cards user keeps if they win a round
+    
+    DeckOfCards() {
+        
+        kept1 = 0; //Initialize values
+        kept2 = 0;
+        kept3 = 0;
+    }
 
     int[] create() { //Returns an array of 52 cards, 4 suits
     
@@ -53,6 +63,54 @@ class DeckOfCards { //Method involving the deck of cards used in the game
             return secondHalf;
         }
     }
+    
+    int[] winDeck(int[] deck, int c1, int c2, int c3, boolean war) { //Adds card to deck if user wins
+    
+        if(war) { //Add 3 cards if user wins war
+        
+            int newDeck[] = new int[deck.length + 3];
+            newDeck[0] = deck[deck.length - 1]; //Send the cards kept to the back of the deck rotation
+            newDeck[1] = deck[deck.length - 2];
+            newDeck[2] = deck[deck.length - 3];
+            deck = loseDeck(deck, true);
+            newDeck[3] = c1; //Send the cards won to the back of the deck rotation
+            newDeck[4] = c2;
+            newDeck[5] = c3;
+            
+            for(int i = 0; i < deck.length; i++) {
+                newDeck[i + 6] = deck[i];
+            }
+            return newDeck;
+        }
+        
+        else { //Add 1 card for normal round
+        
+            int newDeck[] = new int[deck.length + 1];
+            newDeck[0] = deck[deck.length - 1]; //Send the cards kept to the back of the deck rotation
+            deck = loseDeck(deck, false);
+            newDeck[1] = c1; //Send the cards won to the back of the deck rotation
+            
+            for(int i = 0; i < deck.length; i++) {
+                newDeck[i + 1] = deck[i];
+            }
+            return newDeck;
+        }
+    }
+    
+    int[] loseDeck(int[] deck, boolean war) { //Subtracts card from deck if user loses
+    
+        if(war) { //Subtract 3 cards if user loses war
+        
+            int[] newDeck = Arrays.copyOf(deck, deck.length - 3);
+            return newDeck;
+        }
+        
+        else { //Subtract 1 card for normal round
+        
+            int[] newDeck = Arrays.copyOf(deck, deck.length - 1);
+            return newDeck;
+        }
+    }
 }
 
 public class warGame {
@@ -63,14 +121,32 @@ public class warGame {
         cards = newGame.shuffle(cards); //Call method that shuffles the deck
         
         int player[] = newGame.Split(cards, true); //Assign half of the deck to
-        int computer[] = newGame.Split(cards, false); //the player and computer
+        int dealer[] = newGame.Split(cards, false); //the player and dealer
+        
+        System.out.println("player: ");
+        for(int i = 0; i < player.length; i++) {
+            System.out.print(player[i] + ", ");
+        }
+        System.out.println("dealer: ");
+        for(int i = 0; i < dealer.length; i++) {
+            System.out.print(dealer[i] + ", ");
+        }
         
         
-        for(int i = 0; i < 26; i++){
-            //System.out.println(player[i]);
-            System.out.println(computer[i]);
+	    player = newGame.winDeck(player, dealer[dealer.length - 1], dealer[dealer.length - 2], dealer[dealer.length - 3], true);
+	    dealer = newGame.loseDeck(dealer, true);
+	    
+	    System.out.println();
+	    System.out.println();
+	    
+	    System.out.println("player: ");
+        for(int i = 0; i < player.length; i++) {
+            System.out.print(player[i] + ", ");
+        }
+        System.out.println("dealer: ");
+        for(int i = 0; i < dealer.length; i++) {
+            System.out.print(dealer[i] + ", ");
         }
         
     }
 }
-
