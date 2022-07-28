@@ -135,11 +135,11 @@ class War extends DeckOfCards {
         else if(p[i] == 11) Pcard = "J";
         else Pcard = String.valueOf(p[i]);
         
-        if(d[i] == 14) Dcard = "A"; //Change to face cards for dealer
-        else if(d[i] == 13) Dcard = "K";
-        else if(d[i] == 12) Dcard = "Q";
-        else if(d[i] == 11) Dcard = "J";
-        else Dcard = String.valueOf(d[i]);
+        if(d[j] == 14) Dcard = "A"; //Change to face cards for dealer
+        else if(d[j] == 13) Dcard = "K";
+        else if(d[j] == 12) Dcard = "Q";
+        else if(d[j] == 11) Dcard = "J";
+        else Dcard = String.valueOf(d[j]);
         
         System.out.println();
         System.out.println("Dealer's card: " + Dcard); //Show dealer's card
@@ -179,7 +179,7 @@ class War extends DeckOfCards {
         else battle(d, p, bet); //If card values are equal, go to war
     }
     
-    void battle(int[] d, int[] p, int bet) {
+    private void battle(int[] d, int[] p, int bet) {
         
         System.out.println("Tie! Surrender? (type 's') or go to War? (type 'w')"); //Option to go to war or surrender
         
