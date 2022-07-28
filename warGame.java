@@ -1,6 +1,16 @@
 import java.util.Random; //Random number generator
+import java.util.Arrays; //Copy array
 
 class DeckOfCards { //Method involving the deck of cards used in the game
+
+    int kept1, kept2, kept3; //Cards user keeps if they win a round
+    
+    DeckOfCards() {
+        
+        kept1 = 0; //Initialize values
+        kept2 = 0;
+        kept3 = 0;
+    }
 
     int[] create() { //Returns an array of 52 cards, 4 suits
     
@@ -8,7 +18,7 @@ class DeckOfCards { //Method involving the deck of cards used in the game
         int place = 0;
         
         for(int i = 0; i < 4; i++) { //Iterate through the 4 suits
-            for(int j = 1; j < 14; j++) { //and 13 cards per suit
+            for(int j = 2; j < 15; j++) { //and 13 cards per suit
                 cards[place] = j;
                 place++;
             }
@@ -53,24 +63,128 @@ class DeckOfCards { //Method involving the deck of cards used in the game
             return secondHalf;
         }
     }
+    
+    int[] winDeck(int[] deck, int c1, int c2, int c3, boolean war) { //Adds card to deck if user wins
+    
+        if(war) { //Add 3 cards if user wins war
+        
+            int newDeck[] = new int[deck.length + 3];
+            newDeck[0] = deck[deck.length - 1]; //Send the cards kept to the back of the deck rotation
+            newDeck[1] = deck[deck.length - 2];
+            newDeck[2] = deck[deck.length - 3];
+            deck = loseDeck(deck, true);
+            newDeck[3] = c1; //Send the cards won to the back of the deck rotation
+            newDeck[4] = c2;
+            newDeck[5] = c3;
+            
+            for(int i = 0; i < deck.length; i++) {
+                newDeck[i + 6] = deck[i];
+            }
+            return newDeck;
+        }
+        
+        else { //Add 1 card for normal round
+        
+            int newDeck[] = new int[deck.length + 1];
+            newDeck[0] = deck[deck.length - 1]; //Send the cards kept to the back of the deck rotation
+            deck = loseDeck(deck, false);
+            newDeck[1] = c1; //Send the cards won to the back of the deck rotation
+            
+            for(int i = 0; i < deck.length; i++) {
+                newDeck[i + 2] = deck[i];
+            }
+            return newDeck;
+        }
+    }
+    
+    int[] loseDeck(int[] deck, boolean war) { //Subtracts card from deck if user loses
+    
+        if(war) { //Subtract 3 cards if user loses war
+        
+            int[] newDeck = Arrays.copyOf(deck, deck.length - 3);
+            return newDeck;
+        }
+        
+        else { //Subtract 1 card for normal round
+        
+            int[] newDeck = Arrays.copyOf(deck, deck.length - 1);
+            return newDeck;
+        }
+    }
+}
+
+class War {
+    
+    static int playerWins; //Amount of times dealer and player have won
+    static int dealerWins;
+    static int balance;
+    
+    War(int startingCash) {
+        
+        balance = startingCash;
+        playerWins = 0; //Wins start at zero
+        dealerWins = 0;
+    }
+    
+    void showCards(int[] p, int[] d, boolean war) { //Show the cards played in the round
+    
+        int i = p.length - 1;
+        int j = d.length - 1;
+        
+        if(war) { //If war round
+            
+            System.out.println();
+            System.out.println("Dealer's card: " + d[j] + " X");
+            System.out.println("Your card: " + p[i] + " X");
+        }
+        
+        else { //If normal round
+            
+            System.out.println();
+            System.out.println("Dealer's card: " + d[j]);
+            System.out.println("Your card: " + p[i]);
+        }
+    }
+    
+    void whoWon(int[] p, int[] d, int bet) {
+        
+        int i = p.length - 1;
+        int j = d.length - 1;
+        
+        if(d[j] > p[i]) { //If the dealer has a higher card value
+                
+            System.out.println("You lost.");
+            balance -= bet;
+            System.out.println("Your balance: " + balance);
+            dealerWins++; //Iterate dealer wins
+        }
+        
+        else if(p[i] > d[j]) { //If the player has a higher card value
+            
+            System.out.println("You win!");
+            balance += bet;
+            System.out.println("Your balance: " + balance);
+            playerWins++; //Iterate player wins
+        }
+        
+        //else battle(d, p, bet); //If card values are equal, go to war
+    }
 }
 
 public class warGame {
     public static void main(String args[]) {
         
-        DeckOfCards newGame = new DeckOfCards(); //Create reference variable
-        int cards[] = newGame.create(); //Call method that creates deck of cards
-        cards = newGame.shuffle(cards); //Call method that shuffles the deck
+        DeckOfCards deck = new DeckOfCards(); //Create reference variable
+        War newGame = new War(500);
+        int cards[] = deck.create(); //Call method that creates deck of cards
+        cards = deck.shuffle(cards); //Call method that shuffles the deck
         
-        int player[] = newGame.Split(cards, true); //Assign half of the deck to
-        int computer[] = newGame.Split(cards, false); //the player and computer
+        int player[] = deck.Split(cards, true); //Assign half of the deck to
+        int dealer[] = deck.Split(cards, false); //the player and dealer
         
-        
-        for(int i = 0; i < 26; i++){
-            //System.out.println(player[i]);
-            System.out.println(computer[i]);
-        }
+        newGame.showCards(player, dealer, false);
+        newGame.whoWon(player, dealer, 50);
+        System.out.println();
         
     }
 }
-
