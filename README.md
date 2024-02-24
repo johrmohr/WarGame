@@ -1,1 +1,2 @@
-# MorenoJordan_CIS18A_26539
+# WarGame
+My play on the card game War written in Java
